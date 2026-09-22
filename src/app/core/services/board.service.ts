@@ -121,37 +121,50 @@ export class BoardService {
   }
 
   columnIssues(projectKey: string, status: IssueStatus): Issue[] {
+    const project = this.getProject(projectKey);
     const sprint = this.activeSprint(projectKey);
-    if (!sprint) {
+    if (project?.boardType === 'sprint' && !sprint) {
       return [];
     }
 
     return this.issuesSignal()
+      .filter((issue) => {
+        if (issue.projectKey !== projectKey || issue.status !== status || !this.matchesFilters(issue)) {
+          return false;
+        }
+        if (project?.boardType === 'sprint') {
+          return issue.sprintId === sprint?.id;
+        }
+        return true;
+      })
+      .sort((a, b) => a.rank - b.rank);
+  }
+
+  isKanban(projectKey: string): boolean {
+    return this.getProject(projectKey)?.boardType === 'kanban';
+  }
+
+  sprintIssues(sprintId: string, filtered = true): Issue[] {
+    return this.issuesSignal()
       .filter(
-        (issue) =>
-          issue.projectKey === projectKey &&
-          issue.sprintId === sprint.id &&
-          issue.status === status &&
-          this.matchesFilters(issue),
+        (issue) => issue.sprintId === sprintId && (!filtered || this.matchesFilters(issue)),
       )
       .sort((a, b) => a.rank - b.rank);
   }
 
-  sprintIssues(sprintId: string): Issue[] {
-    return this.issuesSignal()
-      .filter((issue) => issue.sprintId === sprintId && this.matchesFilters(issue))
-      .sort((a, b) => a.rank - b.rank);
-  }
-
-  backlogIssues(projectKey: string): Issue[] {
+  backlogIssues(projectKey: string, filtered = true): Issue[] {
     return this.issuesSignal()
       .filter(
         (issue) =>
           issue.projectKey === projectKey &&
           issue.sprintId === null &&
-          this.matchesFilters(issue),
+          (!filtered || this.matchesFilters(issue)),
       )
       .sort((a, b) => a.rank - b.rank);
+  }
+
+  boardSprint(projectKey: string): Sprint | undefined {
+    return this.activeSprint(projectKey) ?? this.plannedSprint(projectKey);
   }
 
   setFilters(patch: Partial<BoardFilters>): void {
@@ -182,10 +195,13 @@ export class BoardService {
       description: input.description.trim(),
       leadId: this.currentUserId,
       color: this.nextProjectColor(),
+      boardType: input.boardType,
     };
 
     this.projectsSignal.update((projects) => [...projects, project]);
-    this.ensureSprint(key);
+    if (project.boardType === 'sprint') {
+      this.ensureSprint(key);
+    }
     return project;
   }
 

@@ -4,19 +4,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { map } from 'rxjs';
 import { BoardService } from '../../../../core/services/board.service';
-import {
-  ISSUE_PRIORITIES,
-  ISSUE_TYPES,
-  ISSUE_TYPE_META,
-  Issue,
-  IssueStatus,
-  PRIORITY_META,
-} from '../../models/board.model';
+import { Issue, IssueStatus } from '../../models/board.model';
 import { IssueCard } from '../../components/issue-card/issue-card';
+import { BoardFiltersBar } from '../../components/board-filters/board-filters';
 
 @Component({
   selector: 'app-kanban',
-  imports: [FormsModule, IssueCard, RouterLink],
+  imports: [FormsModule, IssueCard, RouterLink, BoardFiltersBar],
   templateUrl: './kanban.html',
   styleUrl: './kanban.css',
 })
@@ -30,18 +24,16 @@ export class Kanban {
     { initialValue: this.route.parent?.snapshot.paramMap.get('key') ?? '' },
   );
 
-  readonly types = ISSUE_TYPES;
-  readonly priorities = ISSUE_PRIORITIES;
-  readonly typeMeta = ISSUE_TYPE_META;
-  readonly priorityMeta = PRIORITY_META;
-
   readonly draggedId = signal<string | null>(null);
   readonly dragOver = signal<{ status: IssueStatus; index: number } | null>(null);
   readonly quickCreate = signal<IssueStatus | null>(null);
   readonly quickTitle = signal('');
 
   readonly project = computed(() => this.board.getProject(this.projectKey()));
-  readonly sprint = computed(() => this.board.activeSprint(this.projectKey()));
+  readonly isSprint = computed(() => this.project()?.boardType === 'sprint');
+  readonly sprint = computed(() =>
+    this.isSprint() ? this.board.activeSprint(this.projectKey()) : undefined,
+  );
   readonly columns = this.board.columns;
 
   issuesFor(status: IssueStatus): Issue[] {
@@ -52,9 +44,26 @@ export class Kanban {
     return this.columns.reduce((sum, column) => sum + this.issuesFor(column.id).length, 0);
   }
 
-  sprintCount(): number {
+  totalCount(): number {
+    if (this.isSprint()) {
+      const sprint = this.sprint();
+      return sprint ? this.board.sprintIssues(sprint.id, false).length : 0;
+    }
+    return this.board.projectIssues(this.projectKey()).length;
+  }
+
+  completeSprint(): void {
     const sprint = this.sprint();
-    return sprint ? this.board.sprintIssues(sprint.id).length : 0;
+    if (!sprint) {
+      return;
+    }
+    if (
+      confirm(
+        `Complete ${sprint.name}? Done issues stay with the sprint. Everything else returns to the backlog.`,
+      )
+    ) {
+      this.board.completeSprint(sprint.id);
+    }
   }
 
   openIssue(issue: Issue): void {
@@ -99,8 +108,12 @@ export class Kanban {
 
   submitQuick(status: IssueStatus): void {
     const title = this.quickTitle().trim();
-    const sprint = this.sprint();
-    if (!title || !sprint) {
+    if (!title) {
+      return;
+    }
+
+    const sprint = this.isSprint() ? this.sprint() : undefined;
+    if (this.isSprint() && !sprint) {
       return;
     }
 
@@ -114,7 +127,7 @@ export class Kanban {
       assigneeId: null,
       storyPoints: null,
       labels: [],
-      sprintId: sprint.id,
+      sprintId: sprint?.id ?? null,
     });
     this.quickCreate.set(null);
     this.quickTitle.set('');

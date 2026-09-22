@@ -35,6 +35,7 @@ export class ProjectShell {
   readonly issueCount = computed(
     () => this.board.projectIssues(this.projectKey()).length,
   );
+  readonly isSprint = computed(() => this.project()?.boardType === 'sprint');
 
   closeIssue(): void {
     void this.router.navigate([], {

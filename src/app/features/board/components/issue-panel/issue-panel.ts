@@ -43,6 +43,7 @@ export class IssuePanel {
   readonly assignee = computed(() => this.board.getUser(this.issue().assigneeId));
   readonly reporter = computed(() => this.board.getUser(this.issue().reporterId));
   readonly project = computed(() => this.board.getProject(this.issue().projectKey));
+  readonly isKanban = computed(() => this.project()?.boardType === 'kanban');
   readonly sprints = computed(() =>
     this.board
       .sprints()

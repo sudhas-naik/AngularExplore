@@ -67,46 +67,25 @@ h1 {
   box-shadow: 0 10px 24px rgba(76, 154, 255, 0.35);
 }
 
-.filters {
+.toolbar-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  align-items: center;
-  padding: 0.5rem 1.25rem 0.75rem;
-  min-width: 0;
-  animation: rise-in 0.5s ease both;
 }
 
-.filters input,
-.filters select {
-  border: 1px solid rgba(157, 187, 255, 0.22);
-  border-radius: 0.35rem;
-  padding: 0.4rem 0.6rem;
-  font: inherit;
+.ghost {
+  border: 1px solid rgba(157, 187, 255, 0.28);
+  background: rgba(10, 18, 36, 0.45);
   color: #e8eefc;
-  background-color: rgba(10, 18, 36, 0.55);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.filters select {
-  padding-right: 2rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath stroke='%23C9D6F2' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.6' d='M2.4 4.4 6 8l3.6-3.6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.7rem center;
-  background-size: 0.75rem;
-}
-
-.mine {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: #b7c6e4;
-}
-
-.count {
-  margin-left: auto;
-  color: #93a4c7;
-  font-size: 0.8rem;
+.filters-wrap {
+  padding: 0.5rem 1.25rem 0.75rem;
+  animation: rise-in 0.5s ease both;
 }
 
 .board {

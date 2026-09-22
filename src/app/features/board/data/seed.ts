@@ -22,6 +22,7 @@ export const SEED_PROJECTS: Project[] = [
     description: 'Learn Angular by shipping a full workspace: boards, routing, and forms.',
     leadId: 'u1',
     color: '#0C66E4',
+    boardType: 'sprint',
   },
   {
     key: 'WEB',
@@ -29,6 +30,7 @@ export const SEED_PROJECTS: Project[] = [
     description: 'Marketing site overhaul with a new visual system and responsive layouts.',
     leadId: 'u2',
     color: '#216E4E',
+    boardType: 'kanban',
   },
 ];
 
@@ -41,15 +43,6 @@ export const SEED_SPRINTS: Sprint[] = [
     status: 'active',
     startDate: new Date('2026-09-15'),
     endDate: new Date('2026-09-28'),
-  },
-  {
-    id: 'sprint-web-1',
-    projectKey: 'WEB',
-    name: 'WEB Sprint 3',
-    goal: 'Launch the new homepage and fix mobile navigation.',
-    status: 'active',
-    startDate: new Date('2026-09-18'),
-    endDate: new Date('2026-10-01'),
   },
 ];
 
@@ -355,7 +348,7 @@ export const SEED_ISSUES: Issue[] = [
     reporterId: 'u2',
     storyPoints: 8,
     labels: ['homepage'],
-    sprintId: 'sprint-web-1',
+    sprintId: null,
     rank: 0,
     comments: [],
     createdAt: new Date('2026-09-12'),
@@ -374,7 +367,7 @@ export const SEED_ISSUES: Issue[] = [
     reporterId: 'u5',
     storyPoints: 3,
     labels: ['mobile', 'nav'],
-    sprintId: 'sprint-web-1',
+    sprintId: null,
     rank: 0,
     comments: [],
     createdAt: new Date('2026-09-18'),
@@ -393,7 +386,7 @@ export const SEED_ISSUES: Issue[] = [
     reporterId: 'u2',
     storyPoints: 2,
     labels: ['design'],
-    sprintId: 'sprint-web-1',
+    sprintId: null,
     rank: 0,
     comments: [],
     createdAt: new Date('2026-09-11'),
@@ -412,7 +405,7 @@ export const SEED_ISSUES: Issue[] = [
     reporterId: 'u2',
     storyPoints: 1,
     labels: ['footer'],
-    sprintId: 'sprint-web-1',
+    sprintId: null,
     rank: 0,
     comments: [
       {
@@ -438,7 +431,7 @@ export const SEED_ISSUES: Issue[] = [
     reporterId: 'u4',
     storyPoints: 2,
     labels: ['perf'],
-    sprintId: 'sprint-web-1',
+    sprintId: null,
     rank: 1,
     comments: [],
     createdAt: new Date('2026-09-20'),

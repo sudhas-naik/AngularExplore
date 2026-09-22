@@ -29,9 +29,13 @@ export class Reports {
   );
 
   readonly project = computed(() => this.board.getProject(this.projectKey()));
+  readonly isKanban = computed(() => this.project()?.boardType === 'kanban');
   readonly sprint = computed(() => this.board.activeSprint(this.projectKey()));
   readonly issues = computed(() => this.board.projectIssues(this.projectKey()));
   readonly sprintIssues = computed(() => {
+    if (this.isKanban()) {
+      return this.issues();
+    }
     const sprint = this.sprint();
     return sprint
       ? this.board.issues().filter((issue) => issue.sprintId === sprint.id)

@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { BoardService } from '../../../../core/services/board.service';
+import { BOARD_TYPE_META, BoardType } from '../../models/board.model';
 
 @Component({
   selector: 'app-projects',
@@ -13,6 +14,7 @@ export class Projects {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   readonly board = inject(BoardService);
+  readonly boardTypes = BOARD_TYPE_META;
 
   readonly creating = signal(false);
   readonly keyTaken = signal(false);
@@ -21,6 +23,7 @@ export class Projects {
     name: ['', [Validators.required, Validators.minLength(3)]],
     key: ['', [Validators.required, Validators.pattern(/^[A-Z][A-Z0-9]{1,9}$/)]],
     description: [''],
+    boardType: this.fb.nonNullable.control<BoardType>('kanban'),
   });
 
   openCreate(): void {
@@ -30,7 +33,7 @@ export class Projects {
 
   closeCreate(): void {
     this.creating.set(false);
-    this.form.reset({ name: '', key: '', description: '' });
+    this.form.reset({ name: '', key: '', description: '', boardType: 'kanban' });
   }
 
   onName(value: string): void {

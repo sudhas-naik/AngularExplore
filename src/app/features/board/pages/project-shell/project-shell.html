@@ -11,12 +11,14 @@
         <span class="swatch" [style.background]="project()!.color">{{ project()!.key }}</span>
         <div>
           <strong>{{ project()!.name }}</strong>
-          <p>{{ project()!.key }} software project</p>
+          <p>{{ project()!.key }} · {{ project()!.boardType === 'kanban' ? 'Kanban' : 'Sprint' }}</p>
         </div>
       </div>
       <nav>
         <a routerLink="board" routerLinkActive="active">Board</a>
-        <a routerLink="backlog" routerLinkActive="active">Backlog</a>
+        @if (isSprint()) {
+          <a routerLink="backlog" routerLinkActive="active">Backlog</a>
+        }
         <a routerLink="reports" routerLinkActive="active">Reports</a>
       </nav>
       <p class="count">{{ issueCount() }} issues</p>
@@ -26,7 +28,9 @@
       <nav class="mobile-nav">
         <strong>{{ project()!.key }}</strong>
         <a routerLink="board" routerLinkActive="active">Board</a>
-        <a routerLink="backlog" routerLinkActive="active">Backlog</a>
+        @if (isSprint()) {
+          <a routerLink="backlog" routerLinkActive="active">Backlog</a>
+        }
         <a routerLink="reports" routerLinkActive="active">Reports</a>
       </nav>
       <router-outlet />

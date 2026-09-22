@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BoardService } from '../../../../core/services/board.service';
 import {
@@ -28,6 +28,14 @@ export class CreateIssueDialog {
   readonly pointOptions = STORY_POINT_OPTIONS;
   readonly typeMeta = ISSUE_TYPE_META;
   readonly priorityMeta = PRIORITY_META;
+  readonly destinationLabel = () => {
+    const sprint = this.board.boardSprint(this.projectKey());
+    if (!sprint) {
+      return 'Sprint';
+    }
+    return sprint.status === 'active' ? `Board / ${sprint.name}` : `Sprint / ${sprint.name}`;
+  };
+  readonly isKanban = computed(() => this.board.isKanban(this.projectKey()));
 
   readonly form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -50,15 +58,16 @@ export class CreateIssueDialog {
     }
 
     const value = this.form.getRawValue();
-    const sprint = this.board.activeSprint(this.projectKey());
-    const toSprint = value.destination === 'sprint' && sprint;
+    const kanban = this.isKanban();
+    const sprint = kanban ? undefined : this.board.boardSprint(this.projectKey());
+    const toSprint = !kanban && value.destination === 'sprint' && sprint;
 
     this.board.addIssue({
       projectKey: this.projectKey(),
       title: value.title,
       description: value.description,
       type: value.type,
-      status: toSprint ? this.defaultStatus() : 'todo',
+      status: toSprint || kanban ? this.defaultStatus() : 'todo',
       priority: value.priority,
       assigneeId: value.assigneeId || null,
       storyPoints: value.storyPoints ? Number(value.storyPoints) : null,

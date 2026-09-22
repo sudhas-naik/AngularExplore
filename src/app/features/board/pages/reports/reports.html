@@ -1,27 +1,33 @@
 <section class="reports">
   <p class="crumb">{{ project()?.key }} / Reports</p>
   <h1>Reports</h1>
-  <p class="lead">Sprint progress and issue breakdowns for {{ project()?.name }}.</p>
+  <p class="lead">
+    @if (isKanban()) {
+      Flow and issue breakdowns for {{ project()?.name }}.
+    } @else {
+      Sprint progress and issue breakdowns for {{ project()?.name }}.
+    }
+  </p>
 
   <div class="cards">
     <article>
-      <span class="label">Active sprint</span>
-      <strong>{{ sprint()?.name || 'None' }}</strong>
+      <span class="label">{{ isKanban() ? 'Board type' : 'Active sprint' }}</span>
+      <strong>{{ isKanban() ? 'Kanban' : sprint()?.name || 'None' }}</strong>
     </article>
     <article>
-      <span class="label">Sprint completion</span>
+      <span class="label">{{ isKanban() ? 'Board completion' : 'Sprint completion' }}</span>
       <strong>{{ progress().percent }}%</strong>
       <p>{{ progress().done }} / {{ progress().total }} issues done</p>
     </article>
     <article>
       <span class="label">Story points</span>
       <strong>{{ progress().pointsDone }} / {{ progress().pointsTotal }}</strong>
-      <p>Completed in the active sprint</p>
+      <p>{{ isKanban() ? 'Completed on this board' : 'Completed in the active sprint' }}</p>
     </article>
     <article>
       <span class="label">Project issues</span>
       <strong>{{ issues().length }}</strong>
-      <p>Including backlog</p>
+      <p>{{ isKanban() ? 'All board issues' : 'Including backlog' }}</p>
     </article>
   </div>
 

@@ -2,65 +2,33 @@
   <header class="toolbar">
     <div>
       <p class="crumb">{{ project()?.key }} / Board</p>
-      <h1>{{ sprint()?.name || 'No active sprint' }}</h1>
-      @if (sprint()?.goal) {
-        <p class="goal">{{ sprint()?.goal }}</p>
+      @if (isSprint()) {
+        <h1>{{ sprint()?.name || 'No active sprint' }}</h1>
+        @if (sprint()?.goal) {
+          <p class="goal">{{ sprint()?.goal }}</p>
+        }
+      } @else {
+        <h1>Kanban board</h1>
+        <p class="goal">All issues flow across columns. Drag a card to change its status.</p>
       }
     </div>
-    <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
+    <div class="toolbar-actions">
+      @if (isSprint() && sprint()) {
+        <button type="button" class="ghost" (click)="completeSprint()">Complete sprint</button>
+      }
+      <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
+    </div>
   </header>
 
-  @if (!sprint()) {
+  @if (isSprint() && !sprint()) {
     <div class="empty-sprint">
       <h2>There is no active sprint</h2>
       <p>Plan work in the backlog, then start a sprint to see it on this board.</p>
       <a [routerLink]="['/projects', projectKey(), 'backlog']">Go to backlog</a>
     </div>
   } @else {
-    <div class="filters">
-      <input
-        type="search"
-        placeholder="Search issues"
-        [ngModel]="board.filters().query"
-        (ngModelChange)="board.setFilters({ query: $event })"
-      />
-      <select
-        [ngModel]="board.filters().assigneeId"
-        (ngModelChange)="board.setFilters({ assigneeId: $event })"
-      >
-        <option value="">All assignees</option>
-        <option value="unassigned">Unassigned</option>
-        @for (user of board.users; track user.id) {
-          <option [value]="user.id">{{ user.name }}</option>
-        }
-      </select>
-      <select
-        [ngModel]="board.filters().type"
-        (ngModelChange)="board.setFilters({ type: $event })"
-      >
-        <option value="">All types</option>
-        @for (type of types; track type) {
-          <option [value]="type">{{ typeMeta[type].label }}</option>
-        }
-      </select>
-      <select
-        [ngModel]="board.filters().priority"
-        (ngModelChange)="board.setFilters({ priority: $event })"
-      >
-        <option value="">All priorities</option>
-        @for (priority of priorities; track priority) {
-          <option [value]="priority">{{ priorityMeta[priority].label }}</option>
-        }
-      </select>
-      <label class="mine">
-        <input
-          type="checkbox"
-          [ngModel]="board.filters().onlyMine"
-          (ngModelChange)="board.setFilters({ onlyMine: $event })"
-        />
-        Only my issues
-      </label>
-      <span class="count">{{ filteredCount() }} of {{ sprintCount() }}</span>
+    <div class="filters-wrap">
+      <app-board-filters [matched]="filteredCount()" [total]="totalCount()" />
     </div>
 
     <div class="board">

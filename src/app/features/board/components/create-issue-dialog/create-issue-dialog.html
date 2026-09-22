@@ -58,13 +58,15 @@
             }
           </select>
         </label>
-        <label>
-          Create in
-          <select formControlName="destination">
-            <option value="sprint">Active sprint / board</option>
-            <option value="backlog">Backlog</option>
-          </select>
-        </label>
+        @if (!isKanban()) {
+          <label>
+            Create in
+            <select formControlName="destination">
+              <option value="sprint">{{ destinationLabel() }}</option>
+              <option value="backlog">Backlog</option>
+            </select>
+          </label>
+        }
       </div>
 
       <div class="actions">

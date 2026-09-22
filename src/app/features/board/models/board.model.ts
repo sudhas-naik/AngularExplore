@@ -2,6 +2,7 @@ export type IssueType = 'story' | 'task' | 'bug' | 'epic';
 export type IssuePriority = 'lowest' | 'low' | 'medium' | 'high' | 'highest';
 export type IssueStatus = 'todo' | 'in-progress' | 'in-review' | 'done';
 export type SprintStatus = 'planned' | 'active' | 'completed';
+export type BoardType = 'kanban' | 'sprint';
 
 export interface BoardUser {
   id: string;
@@ -53,6 +54,7 @@ export interface Project {
   description: string;
   leadId: string;
   color: string;
+  boardType: BoardType;
 }
 
 export interface BoardColumn {
@@ -86,6 +88,7 @@ export interface NewProject {
   key: string;
   name: string;
   description: string;
+  boardType: BoardType;
 }
 
 export const BOARD_COLUMNS: BoardColumn[] = [
@@ -125,6 +128,17 @@ export const STATUS_META: Record<IssueStatus, { label: string; color: string; bg
   'in-progress': { label: 'In Progress', color: '#0C66E4', bg: '#E9F2FF' },
   'in-review': { label: 'In Review', color: '#5E4DB2', bg: '#F3F0FF' },
   done: { label: 'Done', color: '#216E4E', bg: '#DCFFF1' },
+};
+
+export const BOARD_TYPE_META: Record<BoardType, { label: string; blurb: string }> = {
+  kanban: {
+    label: 'Kanban',
+    blurb: 'A continuous flow board. All issues live on the board.',
+  },
+  sprint: {
+    label: 'Sprint',
+    blurb: 'Plan work in sprints. The board shows only the active sprint.',
+  },
 };
 
 export const EMPTY_FILTERS: BoardFilters = {

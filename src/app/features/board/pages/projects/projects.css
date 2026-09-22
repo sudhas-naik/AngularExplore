@@ -161,3 +161,51 @@ textarea {
   color: #c9372c;
   font-weight: 500;
 }
+
+.board-type {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.board-type legend {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #44546f;
+  margin-bottom: 0.45rem;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 1px solid #dfe1e6;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice strong {
+  color: #172b4d;
+}
+
+.choice span {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #6b778c;
+  line-height: 1.35;
+}
+
+.choice.selected {
+  border-color: #0c66e4;
+  background: #e9f2ff;
+}

@@ -2,7 +2,7 @@
   <header class="toolbar">
     <div>
       <p class="crumb">{{ project()?.key }} / Backlog</p>
-      <h1>Backlog</h1>
+      <h1>Sprint & backlog</h1>
     </div>
     <div class="actions">
       @if (!planned() && !active()) {
@@ -11,6 +11,10 @@
       <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
     </div>
   </header>
+
+  <div class="filters-wrap">
+    <app-board-filters [matched]="matchedCount()" [total]="totalCount()" />
+  </div>
 
   @if (active(); as sprint) {
     <article
@@ -50,9 +54,15 @@
             <app-issue-type-icon [type]="issue.type" />
             <span class="key">{{ issue.key }}</span>
             <span class="title">{{ issue.title }}</span>
-            <span class="status" [style.color]="statusMeta[issue.status].color">
-              {{ statusMeta[issue.status].label }}
-            </span>
+            <select
+              [value]="issue.status"
+              (click)="$event.stopPropagation()"
+              (change)="onStatus(issue, $event)"
+            >
+              @for (column of statuses; track column.id) {
+                <option [value]="column.id">{{ column.title }}</option>
+              }
+            </select>
             <span class="points">{{ issue.storyPoints ?? '—' }}</span>
             <span
               class="avatar"
@@ -62,9 +72,23 @@
             </span>
           </li>
         } @empty {
-          <li class="empty">Drag issues here to plan the sprint.</li>
+          <li class="empty">Drag issues here, or create one for this sprint.</li>
         }
       </ul>
+      @if (quickLane() === 'active') {
+        <form class="quick" (submit)="$event.preventDefault(); submitQuick('active')">
+          <input
+            [ngModel]="quickTitle()"
+            (ngModelChange)="quickTitle.set($event)"
+            name="quickActive"
+            placeholder="What needs to be done?"
+          />
+          <button type="submit">Add</button>
+          <button type="button" class="link" (click)="quickLane.set(null)">Cancel</button>
+        </form>
+      } @else {
+        <button type="button" class="add" (click)="startQuick('active')">+ Create</button>
+      }
     </article>
   }
 
@@ -97,9 +121,15 @@
             <app-issue-type-icon [type]="issue.type" />
             <span class="key">{{ issue.key }}</span>
             <span class="title">{{ issue.title }}</span>
-            <span class="status" [style.color]="statusMeta[issue.status].color">
-              {{ statusMeta[issue.status].label }}
-            </span>
+            <select
+              [value]="issue.status"
+              (click)="$event.stopPropagation()"
+              (change)="onStatus(issue, $event)"
+            >
+              @for (column of statuses; track column.id) {
+                <option [value]="column.id">{{ column.title }}</option>
+              }
+            </select>
             <span class="points">{{ issue.storyPoints ?? '—' }}</span>
             <span
               class="avatar"
@@ -112,6 +142,20 @@
           <li class="empty">Add issues from the backlog, then start this sprint.</li>
         }
       </ul>
+      @if (quickLane() === 'planned') {
+        <form class="quick" (submit)="$event.preventDefault(); submitQuick('planned')">
+          <input
+            [ngModel]="quickTitle()"
+            (ngModelChange)="quickTitle.set($event)"
+            name="quickPlanned"
+            placeholder="What needs to be done?"
+          />
+          <button type="submit">Add</button>
+          <button type="button" class="link" (click)="quickLane.set(null)">Cancel</button>
+        </form>
+      } @else {
+        <button type="button" class="add" (click)="startQuick('planned')">+ Create</button>
+      }
     </article>
   }
 
@@ -140,9 +184,15 @@
           <app-issue-type-icon [type]="issue.type" />
           <span class="key">{{ issue.key }}</span>
           <span class="title">{{ issue.title }}</span>
-          <span class="status" [style.color]="statusMeta[issue.status].color">
-            {{ statusMeta[issue.status].label }}
-          </span>
+          <select
+            [value]="issue.status"
+            (click)="$event.stopPropagation()"
+            (change)="onStatus(issue, $event)"
+          >
+            @for (column of statuses; track column.id) {
+              <option [value]="column.id">{{ column.title }}</option>
+            }
+          </select>
           <span class="points">{{ issue.storyPoints ?? '—' }}</span>
           <span
             class="avatar"
@@ -155,5 +205,19 @@
         <li class="empty">The backlog is empty. Create an issue to get started.</li>
       }
     </ul>
+    @if (quickLane() === 'backlog') {
+      <form class="quick" (submit)="$event.preventDefault(); submitQuick('backlog')">
+        <input
+          [ngModel]="quickTitle()"
+          (ngModelChange)="quickTitle.set($event)"
+          name="quickBacklog"
+          placeholder="What needs to be done?"
+        />
+        <button type="submit">Add</button>
+        <button type="button" class="link" (click)="quickLane.set(null)">Cancel</button>
+      </form>
+    } @else {
+      <button type="button" class="add" (click)="startQuick('backlog')">+ Create</button>
+    }
   </article>
 </section>

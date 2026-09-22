@@ -110,15 +110,17 @@
             }
           </select>
         </label>
-        <label>
-          Sprint
-          <select [value]="issue().sprintId ?? ''" (change)="onSprint($event)">
-            <option value="">Backlog</option>
-            @for (sprint of sprints(); track sprint.id) {
-              <option [value]="sprint.id">{{ sprint.name }}</option>
-            }
-          </select>
-        </label>
+        @if (!isKanban()) {
+          <label>
+            Sprint
+            <select [value]="issue().sprintId ?? ''" (change)="onSprint($event)">
+              <option value="">Backlog</option>
+              @for (sprint of sprints(); track sprint.id) {
+                <option [value]="sprint.id">{{ sprint.name }}</option>
+              }
+            </select>
+          </label>
+        }
         <div class="labels">
           <p>Labels</p>
           <div class="chips">
