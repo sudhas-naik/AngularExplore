@@ -1,0 +1,48 @@
+@if (!project()) {
+  <section class="missing">
+    <h1>Project not found</h1>
+    <p>That project key does not exist.</p>
+    <a routerLink="/projects">Back to projects</a>
+  </section>
+} @else {
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="project-badge">
+        <span class="swatch" [style.background]="project()!.color">{{ project()!.key }}</span>
+        <div>
+          <strong>{{ project()!.name }}</strong>
+          <p>{{ project()!.key }} · {{ project()!.boardType === 'kanban' ? 'Kanban' : 'Sprint' }}</p>
+        </div>
+      </div>
+      <nav>
+        <a routerLink="board" routerLinkActive="active">Board</a>
+        @if (isSprint()) {
+          <a routerLink="backlog" routerLinkActive="active">Backlog</a>
+        }
+        <a routerLink="reports" routerLinkActive="active">Reports</a>
+      </nav>
+      <p class="count">{{ issueCount() }} issues</p>
+      <p class="hint">Press C to create</p>
+    </aside>
+
+    <div class="workspace">
+      <nav class="mobile-nav">
+        <strong>{{ project()!.key }}</strong>
+        <a routerLink="board" routerLinkActive="active">Board</a>
+        @if (isSprint()) {
+          <a routerLink="backlog" routerLinkActive="active">Backlog</a>
+        }
+        <a routerLink="reports" routerLinkActive="active">Reports</a>
+      </nav>
+      <router-outlet />
+    </div>
+  </div>
+
+  @if (selectedIssue(); as issue) {
+    <app-issue-panel [issue]="issue" (closed)="closeIssue()" />
+  }
+
+  @if (board.createOpen()) {
+    <app-create-issue-dialog [projectKey]="projectKey()" />
+  }
+}

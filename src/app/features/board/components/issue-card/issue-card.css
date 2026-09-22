@@ -1,0 +1,96 @@
+:host {
+  display: block;
+}
+
+.jira-card {
+  padding: 0.75rem 0.8rem 0.65rem;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 18px rgba(7, 16, 31, 0.18);
+  cursor: pointer;
+  user-select: none;
+  animation: pop-in 0.35s ease both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.jira-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 14px 28px rgba(7, 16, 31, 0.28);
+  background: #fff;
+}
+
+.title {
+  margin: 0 0 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: #172b4d;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #626f86;
+}
+
+.right {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.due {
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #e9f2ff;
+  color: #0c66e4;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.due.overdue {
+  background: #ffeceb;
+  color: #c9372c;
+}
+
+.points {
+  min-width: 1.25rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: #44546f;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.priority {
+  font-size: 0.65rem;
+  letter-spacing: -0.08em;
+}
+
+.avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.avatar.empty {
+  background: #dfe1e6;
+  color: #44546f;
+}

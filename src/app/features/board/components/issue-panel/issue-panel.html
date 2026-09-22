@@ -1,0 +1,155 @@
+<div class="overlay" (click)="closed.emit()">
+  <aside class="panel" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <header class="top">
+      <div class="identity">
+        <app-issue-type-icon [type]="issue().type" [size]="18" />
+        <button type="button" class="copy-key" (click)="copyKey()" [title]="copied() ? 'Copied' : 'Copy key'">
+          {{ copied() ? 'Copied' : issue().key }}
+        </button>
+        <span class="project">{{ project()?.name }}</span>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="ghost danger" (click)="deleteIssue()">Delete</button>
+        <button type="button" class="ghost" (click)="closed.emit()" aria-label="Close">✕</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="main">
+        <input
+          class="title"
+          [value]="issue().title"
+          (change)="patch('title', $any($event.target).value)"
+        />
+        <h2>Description</h2>
+        <textarea
+          rows="6"
+          [value]="issue().description"
+          (change)="patch('description', $any($event.target).value)"
+          placeholder="Add a description…"
+        ></textarea>
+
+        <h2>Comments</h2>
+        <ul class="comments">
+          @for (item of issue().comments; track item.id) {
+            <li>
+              <span
+                class="avatar"
+                [style.background]="board.getUser(item.authorId)?.color"
+              >
+                {{ board.getUser(item.authorId)?.initials }}
+              </span>
+              <div>
+                <p class="comment-meta">
+                  <strong>{{ board.getUser(item.authorId)?.name }}</strong>
+                  <time>{{ item.createdAt | date: 'medium' }}</time>
+                </p>
+                <p>{{ item.body }}</p>
+              </div>
+            </li>
+          } @empty {
+            <li class="empty">No comments yet.</li>
+          }
+        </ul>
+        <form class="comment-form" (submit)="$event.preventDefault(); addComment()">
+          <span class="avatar" [style.background]="board.currentUser().color">
+            {{ board.currentUser().initials }}
+          </span>
+          <input
+            [ngModel]="comment()"
+            (ngModelChange)="comment.set($event)"
+            name="comment"
+            placeholder="Add a comment…"
+          />
+          <button type="submit">Save</button>
+        </form>
+      </div>
+
+      <div class="side">
+        <label>
+          Status
+          <select [value]="issue().status" (change)="onStatus($event)">
+            @for (column of statuses; track column.id) {
+              <option [value]="column.id">{{ column.title }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Type
+          <select [value]="issue().type" (change)="onType($event)">
+            @for (type of types; track type) {
+              <option [value]="type">{{ typeMeta[type].label }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Assignee
+          <select [value]="issue().assigneeId ?? ''" (change)="onAssignee($event)">
+            <option value="">Unassigned</option>
+            @for (user of board.users; track user.id) {
+              <option [value]="user.id">{{ user.name }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Reporter
+          <input [value]="reporter()?.name" disabled />
+        </label>
+        <label>
+          Priority
+          <select [value]="issue().priority" (change)="onPriority($event)">
+            @for (priority of priorities; track priority) {
+              <option [value]="priority">{{ priorityMeta[priority].label }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Story points
+          <select [value]="issue().storyPoints ?? ''" (change)="onPoints($event)">
+            <option value="">None</option>
+            @for (points of pointOptions; track points) {
+              <option [value]="points">{{ points }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Due date
+          <input type="date" [value]="dueValue()" (change)="onDue($event)" />
+        </label>
+        @if (!isKanban()) {
+          <label>
+            Sprint
+            <select [value]="issue().sprintId ?? ''" (change)="onSprint($event)">
+              <option value="">Backlog</option>
+              @for (sprint of sprints(); track sprint.id) {
+                <option [value]="sprint.id">{{ sprint.name }}</option>
+              }
+            </select>
+          </label>
+        }
+        <div class="labels">
+          <p>Labels</p>
+          <div class="chips">
+            @for (label of issue().labels; track label) {
+              <button type="button" class="chip" (click)="removeLabel(label)">
+                {{ label }} ×
+              </button>
+            }
+          </div>
+          <form (submit)="$event.preventDefault(); addLabel()">
+            <input
+              [ngModel]="labelDraft()"
+              (ngModelChange)="labelDraft.set($event)"
+              name="label"
+              placeholder="Add label"
+            />
+          </form>
+        </div>
+        <p class="dates">
+          Created {{ issue().createdAt | date: 'mediumDate' }}<br />
+          Updated {{ issue().updatedAt | date: 'mediumDate' }}
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>

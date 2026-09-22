@@ -1,15 +1,18 @@
 :host {
   display: block;
   margin-top: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .footer {
   padding: 1rem 1.5rem;
-  background: #f1f5f9;
-  color: #64748b;
+  background: rgba(10, 18, 36, 0.72);
+  color: #93a4c7;
   font-size: 0.875rem;
   text-align: center;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(157, 187, 255, 0.14);
+  backdrop-filter: blur(16px);
 }
 
 .footer p {

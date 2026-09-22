@@ -1,0 +1,98 @@
+<section class="kanban">
+  <header class="toolbar">
+    <div>
+      <p class="crumb">{{ project()?.key }} / Board</p>
+      @if (isSprint()) {
+        <h1>{{ sprint()?.name || 'No active sprint' }}</h1>
+        @if (sprint()?.goal) {
+          <p class="goal">{{ sprint()?.goal }}</p>
+        }
+      } @else {
+        <h1>Kanban board</h1>
+        <p class="goal">All issues flow across columns. Drag a card to change its status.</p>
+      }
+    </div>
+    <div class="toolbar-actions">
+      @if (isSprint() && sprint()) {
+        <button type="button" class="ghost" (click)="completeSprint()">Complete sprint</button>
+      }
+      <button type="button" class="create" title="Create issue (C)" (click)="board.openCreate()">Create issue</button>
+    </div>
+  </header>
+
+  @if (isSprint() && !sprint()) {
+    <div class="empty-sprint">
+      <h2>There is no active sprint</h2>
+      <p>Plan work in the backlog, then start a sprint to see it on this board.</p>
+      <a [routerLink]="['/projects', projectKey(), 'backlog']">Go to backlog</a>
+    </div>
+  } @else {
+    <div class="filters-wrap">
+      <app-board-filters [matched]="filteredCount()" [total]="totalCount()" />
+    </div>
+
+    <div class="board">
+      @for (column of columns; track column.id; let i = $index) {
+        <section
+          class="column"
+          [style.animation-delay]="i * 80 + 'ms'"
+          [class.over]="dragOver()?.status === column.id"
+          [class.wip]="wipExceeded(column.id, column.wipLimit)"
+          (dragover)="onDragOver($event, column.id, issuesFor(column.id).length)"
+          (drop)="onDrop($event, column.id, issuesFor(column.id).length)"
+        >
+          <header>
+            <h2>{{ column.title }}</h2>
+            <span>
+              {{ issuesFor(column.id).length }}
+              @if (column.wipLimit) {
+                / {{ column.wipLimit }}
+              }
+            </span>
+          </header>
+          @if (wipExceeded(column.id, column.wipLimit)) {
+            <p class="wip-note">WIP limit exceeded</p>
+          }
+          <div class="cards">
+            @for (issue of issuesFor(column.id); track issue.id; let i = $index) {
+              @if (dragOver()?.status === column.id && dragOver()?.index === i) {
+                <div class="drop-line"></div>
+              }
+              <div
+                [class.dragging]="draggedId() === issue.id"
+                (dragover)="onDragOver($event, column.id, i); $event.stopPropagation()"
+                (drop)="onDrop($event, column.id, i); $event.stopPropagation()"
+              >
+                <app-issue-card
+                  [issue]="issue"
+                  (open)="openIssue($event)"
+                  (dragStart)="onDragStart($event, issue)"
+                  (dragEnd)="onDragEnd()"
+                />
+              </div>
+            }
+            @if (dragOver()?.status === column.id && dragOver()?.index === issuesFor(column.id).length) {
+              <div class="drop-line"></div>
+            }
+            @if (quickCreate() === column.id) {
+              <form class="quick" (submit)="$event.preventDefault(); submitQuick(column.id)">
+                <input
+                  [ngModel]="quickTitle()"
+                  (ngModelChange)="quickTitle.set($event)"
+                  name="quickTitle"
+                  placeholder="What needs to be done?"
+                />
+                <div>
+                  <button type="submit">Add</button>
+                  <button type="button" class="link" (click)="quickCreate.set(null)">Cancel</button>
+                </div>
+              </form>
+            } @else {
+              <button type="button" class="add" (click)="startQuick(column.id)">+ Create</button>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  }
+</section>

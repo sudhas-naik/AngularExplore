@@ -1,0 +1,85 @@
+<section class="reports">
+  <p class="crumb">{{ project()?.key }} / Reports</p>
+  <h1>Reports</h1>
+  <p class="lead">
+    @if (isKanban()) {
+      Flow and issue breakdowns for {{ project()?.name }}.
+    } @else {
+      Sprint progress and issue breakdowns for {{ project()?.name }}.
+    }
+  </p>
+
+  <div class="cards">
+    <article>
+      <span class="label">{{ isKanban() ? 'Board type' : 'Active sprint' }}</span>
+      <strong>{{ isKanban() ? 'Kanban' : sprint()?.name || 'None' }}</strong>
+    </article>
+    <article>
+      <span class="label">{{ isKanban() ? 'Board completion' : 'Sprint completion' }}</span>
+      <strong>{{ progress().percent }}%</strong>
+      <p>{{ progress().done }} / {{ progress().total }} issues done</p>
+    </article>
+    <article>
+      <span class="label">Story points</span>
+      <strong>{{ progress().pointsDone }} / {{ progress().pointsTotal }}</strong>
+      <p>{{ isKanban() ? 'Completed on this board' : 'Completed in the active sprint' }}</p>
+    </article>
+    <article>
+      <span class="label">Project issues</span>
+      <strong>{{ issues().length }}</strong>
+      <p>{{ isKanban() ? 'All board issues' : 'Including backlog' }}</p>
+    </article>
+  </div>
+
+  <div class="progress-track" aria-hidden="true">
+    <span [style.width.%]="progress().percent"></span>
+  </div>
+
+  <div class="grid">
+    <section>
+      <h2>By status</h2>
+      @for (row of statusCounts(); track row.id) {
+        <div class="row">
+          <span>{{ row.title }}</span>
+          <div class="bar">
+            <span
+              [style.width]="barWidth(row.count, maxCount(statusCounts()))"
+              [style.background]="statusMeta[row.id].color"
+            ></span>
+          </div>
+          <em>{{ row.count }}</em>
+        </div>
+      }
+    </section>
+    <section>
+      <h2>By type</h2>
+      @for (row of typeCounts(); track row.type) {
+        <div class="row">
+          <span>{{ typeMeta[row.type].label }}</span>
+          <div class="bar">
+            <span
+              [style.width]="barWidth(row.count, maxCount(typeCounts()))"
+              [style.background]="typeMeta[row.type].color"
+            ></span>
+          </div>
+          <em>{{ row.count }}</em>
+        </div>
+      }
+    </section>
+    <section>
+      <h2>By assignee</h2>
+      @for (row of assigneeCounts(); track row.name) {
+        <div class="row">
+          <span>{{ row.name }}</span>
+          <div class="bar">
+            <span
+              [style.width]="barWidth(row.count, maxCount(assigneeCounts()))"
+              [style.background]="row.color"
+            ></span>
+          </div>
+          <em>{{ row.count }}</em>
+        </div>
+      }
+    </section>
+  </div>
+</section>
