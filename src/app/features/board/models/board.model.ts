@@ -32,6 +32,7 @@ export interface Issue {
   storyPoints: number | null;
   labels: string[];
   sprintId: string | null;
+  dueDate?: Date | null;
   rank: number;
   comments: IssueComment[];
   createdAt: Date;
@@ -82,6 +83,7 @@ export interface NewIssue {
   storyPoints: number | null;
   labels: string[];
   sprintId: string | null;
+  dueDate?: Date | null;
 }
 
 export interface NewProject {

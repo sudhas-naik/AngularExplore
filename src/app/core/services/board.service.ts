@@ -1,4 +1,5 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
 import {
   BOARD_COLUMNS,
   BoardColumn,
@@ -19,11 +20,25 @@ import {
   SEED_SPRINTS,
   SEED_USERS,
 } from '../../features/board/data/seed';
+import { ToastService } from './toast.service';
+
+const STORAGE_KEY = 'angular-explore-board-v2';
+
+function reviveDates(_key: string, value: unknown): unknown {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+    return new Date(value);
+  }
+  return value;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
+  private readonly toast = inject(ToastService);
+  private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private persistReady = false;
+
   private readonly projectsSignal = signal<Project[]>(SEED_PROJECTS);
   private readonly sprintsSignal = signal<Sprint[]>(SEED_SPRINTS);
   private readonly issuesSignal = signal<Issue[]>(SEED_ISSUES);
@@ -39,6 +54,25 @@ export class BoardService {
   readonly issues = this.issuesSignal.asReadonly();
   readonly filters = this.filtersSignal.asReadonly();
   readonly createOpen = this.createOpenSignal.asReadonly();
+
+  constructor() {
+    if (this.browser) {
+      this.restore();
+      this.persistReady = true;
+    }
+
+    effect(() => {
+      const snapshot = {
+        projects: this.projectsSignal(),
+        sprints: this.sprintsSignal(),
+        issues: this.issuesSignal(),
+      };
+      if (!this.persistReady || !this.browser) {
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    });
+  }
 
   readonly currentUser = computed(
     () => this.users.find((user) => user.id === this.currentUserId) ?? this.users[0],
@@ -202,6 +236,7 @@ export class BoardService {
     if (project.boardType === 'sprint') {
       this.ensureSprint(key);
     }
+    this.toast.show(`Created project ${project.key}`);
     return project;
   }
 
@@ -220,6 +255,7 @@ export class BoardService {
       storyPoints: input.storyPoints,
       labels: input.labels,
       sprintId: input.sprintId,
+      dueDate: input.dueDate ?? null,
       rank: this.nextRank(input.projectKey, input.status, input.sprintId),
       comments: [],
       createdAt: new Date(),
@@ -227,6 +263,7 @@ export class BoardService {
     };
 
     this.issuesSignal.update((issues) => [...issues, issue]);
+    this.toast.show(`Created ${issue.key}`);
     return issue;
   }
 
@@ -239,7 +276,11 @@ export class BoardService {
   }
 
   deleteIssue(id: string): void {
-    this.issuesSignal.update((issues) => issues.filter((issue) => issue.id !== id));
+    const issue = this.getIssueById(id);
+    this.issuesSignal.update((issues) => issues.filter((item) => item.id !== id));
+    if (issue) {
+      this.toast.show(`Deleted ${issue.key}`);
+    }
   }
 
   addComment(issueId: string, body: string): void {
@@ -376,6 +417,7 @@ export class BoardService {
         item.id === sprintId ? { ...item, status: 'active', startDate, endDate } : item,
       ),
     );
+    this.toast.show(`Started ${sprint.name}`);
   }
 
   completeSprint(sprintId: string): void {
@@ -397,6 +439,32 @@ export class BoardService {
     );
 
     this.ensureSprint(sprint.projectKey);
+    this.toast.show(`Completed ${sprint.name}`);
+  }
+
+  private restore(): void {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return;
+      }
+      const data = JSON.parse(raw, reviveDates) as {
+        projects?: Project[];
+        sprints?: Sprint[];
+        issues?: Issue[];
+      };
+      if (data.projects?.length) {
+        this.projectsSignal.set(data.projects);
+      }
+      if (data.sprints?.length) {
+        this.sprintsSignal.set(data.sprints);
+      }
+      if (data.issues?.length) {
+        this.issuesSignal.set(data.issues);
+      }
+    } catch {
+      // Keep the seed data if stored board state is unreadable.
+    }
   }
 
   private ensureSprint(projectKey: string): void {

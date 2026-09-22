@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BoardService } from '../../../../core/services/board.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import {
   BOARD_COLUMNS,
   ISSUE_PRIORITIES,
@@ -25,12 +26,14 @@ import { IssueTypeIcon } from '../issue-type-icon/issue-type-icon';
 })
 export class IssuePanel {
   readonly board = inject(BoardService);
+  private readonly toast = inject(ToastService);
 
   readonly issue = input.required<Issue>();
   readonly closed = output<void>();
 
   readonly comment = signal('');
   readonly labelDraft = signal('');
+  readonly copied = signal(false);
 
   readonly types = ISSUE_TYPES;
   readonly priorities = ISSUE_PRIORITIES;
@@ -53,11 +56,21 @@ export class IssuePanel {
       ),
   );
 
-  patch<K extends 'title' | 'description' | 'type' | 'status' | 'priority' | 'assigneeId' | 'storyPoints' | 'sprintId'>(
+  readonly dueValue = computed(() => toDateInput(this.issue().dueDate));
+
+  patch<K extends 'title' | 'description' | 'type' | 'status' | 'priority' | 'assigneeId' | 'storyPoints' | 'sprintId' | 'dueDate'>(
     key: K,
     value: Issue[K],
   ): void {
     this.board.updateIssue(this.issue().id, { [key]: value });
+  }
+
+  copyKey(): void {
+    const key = this.issue().key;
+    void navigator.clipboard?.writeText(key).catch(() => undefined);
+    this.copied.set(true);
+    this.toast.show(`Copied ${key}`);
+    setTimeout(() => this.copied.set(false), 1200);
   }
 
   onType(event: Event): void {
@@ -87,6 +100,11 @@ export class IssuePanel {
     this.board.setIssueSprint(this.issue().id, value || null);
   }
 
+  onDue(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.patch('dueDate', value ? new Date(`${value}T00:00:00`) : null);
+  }
+
   addLabel(): void {
     const label = this.labelDraft().trim();
     if (!label) {
@@ -114,4 +132,14 @@ export class IssuePanel {
       this.closed.emit();
     }
   }
+}
+
+function toDateInput(value: Date | null | undefined): string {
+  if (!value) {
+    return '';
+  }
+  const date = new Date(value);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
 }

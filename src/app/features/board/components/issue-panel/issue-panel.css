@@ -4,7 +4,10 @@
 
 .overlay {
   position: fixed;
-  inset: 0;
+  top: 3.5rem;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: rgba(5, 10, 22, 0.55);
   z-index: 40;
   display: flex;
@@ -43,6 +46,22 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: #44546f;
+}
+
+.copy-key {
+  border: 0;
+  background: transparent;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.3rem;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.copy-key:hover {
+  background: #f1f2f4;
+  color: #0c66e4;
 }
 
 .project {

@@ -8,7 +8,7 @@
       @if (!planned() && !active()) {
         <button type="button" class="secondary" (click)="createSprint()">Create sprint</button>
       }
-      <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
+      <button type="button" class="create" title="Create issue (C)" (click)="board.openCreate()">Create issue</button>
     </div>
   </header>
 

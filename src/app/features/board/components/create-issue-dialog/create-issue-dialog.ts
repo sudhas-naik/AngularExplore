@@ -44,6 +44,7 @@ export class CreateIssueDialog {
     priority: this.fb.nonNullable.control<(typeof ISSUE_PRIORITIES)[number]>('medium'),
     assigneeId: [''],
     storyPoints: [''],
+    dueDate: [''],
     destination: this.fb.nonNullable.control<'sprint' | 'backlog'>('sprint'),
   });
 
@@ -73,6 +74,7 @@ export class CreateIssueDialog {
       storyPoints: value.storyPoints ? Number(value.storyPoints) : null,
       labels: [],
       sprintId: toSprint ? sprint.id : null,
+      dueDate: value.dueDate ? new Date(`${value.dueDate}T00:00:00`) : null,
     });
 
     this.form.reset({
@@ -82,6 +84,7 @@ export class CreateIssueDialog {
       priority: 'medium',
       assigneeId: '',
       storyPoints: '',
+      dueDate: '',
       destination: 'sprint',
     });
     this.close();

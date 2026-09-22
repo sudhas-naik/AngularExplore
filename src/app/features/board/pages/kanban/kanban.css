@@ -172,6 +172,13 @@ h1 {
   opacity: 0.4;
 }
 
+.drop-line {
+  height: 3px;
+  border-radius: 99px;
+  background: #8ec2ff;
+  box-shadow: 0 0 10px #4c9aff;
+}
+
 .add,
 .link {
   border: 0;

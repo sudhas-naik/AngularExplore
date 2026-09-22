@@ -17,6 +17,7 @@ type QuickLane = 'active' | 'planned' | 'backlog';
   templateUrl: './backlog.html',
   styleUrl: './backlog.css',
 })
+
 export class Backlog {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

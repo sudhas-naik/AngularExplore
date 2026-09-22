@@ -16,7 +16,7 @@
       @if (isSprint() && sprint()) {
         <button type="button" class="ghost" (click)="completeSprint()">Complete sprint</button>
       }
-      <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
+      <button type="button" class="create" title="Create issue (C)" (click)="board.openCreate()">Create issue</button>
     </div>
   </header>
 
@@ -55,6 +55,9 @@
           }
           <div class="cards">
             @for (issue of issuesFor(column.id); track issue.id; let i = $index) {
+              @if (dragOver()?.status === column.id && dragOver()?.index === i) {
+                <div class="drop-line"></div>
+              }
               <div
                 [class.dragging]="draggedId() === issue.id"
                 (dragover)="onDragOver($event, column.id, i); $event.stopPropagation()"
@@ -67,6 +70,9 @@
                   (dragEnd)="onDragEnd()"
                 />
               </div>
+            }
+            @if (dragOver()?.status === column.id && dragOver()?.index === issuesFor(column.id).length) {
+              <div class="drop-line"></div>
             }
             @if (quickCreate() === column.id) {
               <form class="quick" (submit)="$event.preventDefault(); submitQuick(column.id)">

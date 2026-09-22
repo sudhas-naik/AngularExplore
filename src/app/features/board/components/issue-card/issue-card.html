@@ -12,6 +12,9 @@
       {{ issue().key }}
     </span>
     <span class="right">
+      @if (dueLabel(); as due) {
+        <span class="due" [class.overdue]="overdue()">{{ due }}</span>
+      }
       @if (issue().storyPoints !== null) {
         <span class="points">{{ issue().storyPoints }}</span>
       }

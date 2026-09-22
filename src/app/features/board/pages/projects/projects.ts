@@ -15,10 +15,8 @@ export class Projects {
   private readonly router = inject(Router);
   readonly board = inject(BoardService);
   readonly boardTypes = BOARD_TYPE_META;
-
   readonly creating = signal(false);
   readonly keyTaken = signal(false);
-
   readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     key: ['', [Validators.required, Validators.pattern(/^[A-Z][A-Z0-9]{1,9}$/)]],

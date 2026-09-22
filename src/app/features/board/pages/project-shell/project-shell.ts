@@ -59,4 +59,23 @@ export class ProjectShell {
       this.closeIssue();
     }
   }
+
+  @HostListener('document:keydown', ['$event'])
+  onCreateShortcut(event: KeyboardEvent): void {
+    if (event.key !== 'c' && event.key !== 'C') {
+      return;
+    }
+    if (event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('input, textarea, select, [contenteditable="true"]')) {
+      return;
+    }
+    if (this.board.createOpen() || this.selectedIssue() || !this.project()) {
+      return;
+    }
+    event.preventDefault();
+    this.board.openCreate();
+  }
 }

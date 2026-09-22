@@ -5,10 +5,11 @@ import { filter, map, startWith } from 'rxjs';
 import { Header } from './shared/components/header/header';
 import { Footer } from './shared/components/footer/footer';
 import { SpaceScene } from './shared/components/space-scene/space-scene';
+import { ToastHost } from './shared/components/toast-host/toast-host';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer, SpaceScene],
+  imports: [RouterOutlet, Header, Footer, SpaceScene, ToastHost],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

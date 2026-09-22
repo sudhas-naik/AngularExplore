@@ -19,6 +19,24 @@ export class IssueCard {
 
   readonly assignee = computed(() => this.board.getUser(this.issue().assigneeId));
   readonly priority = computed(() => PRIORITY_META[this.issue().priority]);
+  readonly dueLabel = computed(() => {
+    const due = this.issue().dueDate;
+    if (!due) {
+      return null;
+    }
+    return new Date(due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  });
+  readonly overdue = computed(() => {
+    const due = this.issue().dueDate;
+    if (!due || this.issue().status === 'done') {
+      return false;
+    }
+    const dueDay = new Date(due);
+    dueDay.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return dueDay < today;
+  });
 
   readonly dragging = signal(false);
 

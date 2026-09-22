@@ -132,6 +132,7 @@ export const SEED_ISSUES: Issue[] = [
     storyPoints: 2,
     labels: ['nav', 'bug'],
     sprintId: 'sprint-ang-1',
+    dueDate: new Date('2026-09-20'),
     rank: 0,
     comments: [],
     createdAt: new Date('2026-09-18'),
@@ -152,6 +153,7 @@ export const SEED_ISSUES: Issue[] = [
     storyPoints: 8,
     labels: ['board'],
     sprintId: 'sprint-ang-1',
+    dueDate: new Date('2026-09-28'),
     rank: 1,
     comments: [
       {
@@ -368,6 +370,7 @@ export const SEED_ISSUES: Issue[] = [
     storyPoints: 3,
     labels: ['mobile', 'nav'],
     sprintId: null,
+    dueDate: new Date('2026-09-21'),
     rank: 0,
     comments: [],
     createdAt: new Date('2026-09-18'),

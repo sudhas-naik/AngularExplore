@@ -3,7 +3,9 @@
     <header class="top">
       <div class="identity">
         <app-issue-type-icon [type]="issue().type" [size]="18" />
-        <span>{{ issue().key }}</span>
+        <button type="button" class="copy-key" (click)="copyKey()" [title]="copied() ? 'Copied' : 'Copy key'">
+          {{ copied() ? 'Copied' : issue().key }}
+        </button>
         <span class="project">{{ project()?.name }}</span>
       </div>
       <div class="top-actions">
@@ -109,6 +111,10 @@
               <option [value]="points">{{ points }}</option>
             }
           </select>
+        </label>
+        <label>
+          Due date
+          <input type="date" [value]="dueValue()" (change)="onDue($event)" />
         </label>
         @if (!isKanban()) {
           <label>

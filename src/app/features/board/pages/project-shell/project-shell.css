@@ -54,10 +54,16 @@
 }
 
 .project-badge p,
-.count {
+.count,
+.hint {
   margin: 0.15rem 0 0;
   color: #93a4c7;
   font-size: 0.75rem;
+}
+
+.hint {
+  margin-top: auto;
+  padding: 0 0.5rem;
 }
 
 nav {
