@@ -1,0 +1,19 @@
+<article class="task" [attr.data-status]="task().status">
+  <div class="body">
+    <h3>{{ task().title }}</h3>
+    <p>{{ task().description }}</p>
+    <time>{{ task().createdAt | date: 'mediumDate' }}</time>
+  </div>
+
+  <div class="controls">
+    <label>
+      Status
+      <select [value]="task().status" (change)="onStatusChange($event)">
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+    </label>
+    <button type="button" class="danger" (click)="onRemove()">Delete</button>
+  </div>
+</article>

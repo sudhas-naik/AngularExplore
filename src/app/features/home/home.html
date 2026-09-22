@@ -1,0 +1,24 @@
+<section class="home">
+  <h1>Welcome to TaskFlow</h1>
+  <p class="lead">
+    A simple Angular app that shows the standard flow: components, services, routing, and forms.
+  </p>
+  <div class="stats">
+    <div class="stat">
+      <span class="value">{{ tasks().length }}</span>
+      <span class="label">Total tasks</span>
+    </div>
+    <div class="stat">
+      <span class="value">{{ pendingCount() }}</span>
+      <span class="label">Pending</span>
+    </div>
+    <div class="stat">
+      <span class="value">{{ doneCount() }}</span>
+      <span class="label">Done</span>
+    </div>
+  </div>
+  <div class="actions">
+    <a routerLink="/tasks" class="btn primary">View tasks</a>
+    <a routerLink="/tasks/new" class="btn">Add a task</a>
+  </div>
+</section>

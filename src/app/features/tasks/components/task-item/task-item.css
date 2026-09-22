@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+.task {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #94a3b8;
+  border-radius: 0.5rem;
+}
+
+.task[data-status='pending'] {
+  border-left-color: #f59e0b;
+}
+
+.task[data-status='in-progress'] {
+  border-left-color: #0ea5e9;
+}
+
+.task[data-status='done'] {
+  border-left-color: #10b981;
+}
+
+.body h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.body p {
+  margin: 0 0 0.5rem;
+  color: #64748b;
+  font-size: 0.925rem;
+}
+
+.body time {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 9rem;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.controls select {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  background: #fff;
+}
+
+.danger {
+  padding: 0.4rem 0.65rem;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+  background: #fef2f2;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+.danger:hover {
+  background: #fee2e2;
+}
