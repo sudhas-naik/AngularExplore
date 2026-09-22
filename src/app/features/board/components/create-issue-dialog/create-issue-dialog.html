@@ -1,0 +1,76 @@
+<div class="overlay" (click)="close()">
+  <section class="dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <header>
+      <h1>Create issue</h1>
+      <button type="button" class="close" (click)="close()" aria-label="Close">✕</button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Issue type
+        <select formControlName="type">
+          @for (type of types; track type) {
+            <option [value]="type">{{ typeMeta[type].label }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Summary
+        <input type="text" formControlName="title" placeholder="What needs to be done?" />
+        @if (form.controls.title.touched && form.controls.title.invalid) {
+          <span class="error">Summary needs at least 3 characters.</span>
+        }
+      </label>
+
+      <label>
+        Description
+        <textarea formControlName="description" rows="4" placeholder="Add more detail…"></textarea>
+      </label>
+
+      <div class="row">
+        <label>
+          Priority
+          <select formControlName="priority">
+            @for (priority of priorities; track priority) {
+              <option [value]="priority">{{ priorityMeta[priority].label }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Assignee
+          <select formControlName="assigneeId">
+            <option value="">Unassigned</option>
+            @for (user of board.users; track user.id) {
+              <option [value]="user.id">{{ user.name }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      <div class="row">
+        <label>
+          Story points
+          <select formControlName="storyPoints">
+            <option value="">None</option>
+            @for (points of pointOptions; track points) {
+              <option [value]="points">{{ points }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Create in
+          <select formControlName="destination">
+            <option value="sprint">Active sprint / board</option>
+            <option value="backlog">Backlog</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="secondary" (click)="close()">Cancel</button>
+        <button type="submit">Create</button>
+      </div>
+    </form>
+  </section>
+</div>

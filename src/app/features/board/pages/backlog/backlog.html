@@ -1,0 +1,159 @@
+<section class="backlog">
+  <header class="toolbar">
+    <div>
+      <p class="crumb">{{ project()?.key }} / Backlog</p>
+      <h1>Backlog</h1>
+    </div>
+    <div class="actions">
+      @if (!planned() && !active()) {
+        <button type="button" class="secondary" (click)="createSprint()">Create sprint</button>
+      }
+      <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
+    </div>
+  </header>
+
+  @if (active(); as sprint) {
+    <article
+      class="lane"
+      (dragover)="allowDrop($event)"
+      (drop)="onDrop($event, sprint.id, activeIssues().length)"
+    >
+      <header>
+        <div>
+          <h2>{{ sprint.name }}</h2>
+          <p>
+            {{ activeIssues().length }} issues · {{ points().active }} points
+            @if (sprint.startDate && sprint.endDate) {
+              · {{ sprint.startDate | date: 'MMM d' }} – {{ sprint.endDate | date: 'MMM d' }}
+            }
+          </p>
+          @if (sprint.goal) {
+            <p class="goal">{{ sprint.goal }}</p>
+          }
+        </div>
+        <div class="lane-actions">
+          <a [routerLink]="['/projects', projectKey(), 'board']">View board</a>
+          <button type="button" (click)="completeActive()">Complete sprint</button>
+        </div>
+      </header>
+      <ul>
+        @for (issue of activeIssues(); track issue.id; let i = $index) {
+          <li
+            draggable="true"
+            [class.dragging]="draggedId() === issue.id"
+            (dragstart)="onDragStart($event, issue)"
+            (dragend)="onDragEnd()"
+            (dragover)="allowDrop($event)"
+            (drop)="onDrop($event, sprint.id, i); $event.stopPropagation()"
+            (click)="openIssue(issue)"
+          >
+            <app-issue-type-icon [type]="issue.type" />
+            <span class="key">{{ issue.key }}</span>
+            <span class="title">{{ issue.title }}</span>
+            <span class="status" [style.color]="statusMeta[issue.status].color">
+              {{ statusMeta[issue.status].label }}
+            </span>
+            <span class="points">{{ issue.storyPoints ?? '—' }}</span>
+            <span
+              class="avatar"
+              [style.background]="board.getUser(issue.assigneeId)?.color || '#dfe1e6'"
+            >
+              {{ board.getUser(issue.assigneeId)?.initials || '?' }}
+            </span>
+          </li>
+        } @empty {
+          <li class="empty">Drag issues here to plan the sprint.</li>
+        }
+      </ul>
+    </article>
+  }
+
+  @if (planned(); as sprint) {
+    <article
+      class="lane"
+      (dragover)="allowDrop($event)"
+      (drop)="onDrop($event, sprint.id, plannedIssues().length)"
+    >
+      <header>
+        <div>
+          <h2>{{ sprint.name }}</h2>
+          <p>{{ plannedIssues().length }} issues · {{ points().planned }} points · Planned</p>
+        </div>
+        <div class="lane-actions">
+          <button type="button" (click)="startPlanned()">Start sprint</button>
+        </div>
+      </header>
+      <ul>
+        @for (issue of plannedIssues(); track issue.id; let i = $index) {
+          <li
+            draggable="true"
+            [class.dragging]="draggedId() === issue.id"
+            (dragstart)="onDragStart($event, issue)"
+            (dragend)="onDragEnd()"
+            (dragover)="allowDrop($event)"
+            (drop)="onDrop($event, sprint.id, i); $event.stopPropagation()"
+            (click)="openIssue(issue)"
+          >
+            <app-issue-type-icon [type]="issue.type" />
+            <span class="key">{{ issue.key }}</span>
+            <span class="title">{{ issue.title }}</span>
+            <span class="status" [style.color]="statusMeta[issue.status].color">
+              {{ statusMeta[issue.status].label }}
+            </span>
+            <span class="points">{{ issue.storyPoints ?? '—' }}</span>
+            <span
+              class="avatar"
+              [style.background]="board.getUser(issue.assigneeId)?.color || '#dfe1e6'"
+            >
+              {{ board.getUser(issue.assigneeId)?.initials || '?' }}
+            </span>
+          </li>
+        } @empty {
+          <li class="empty">Add issues from the backlog, then start this sprint.</li>
+        }
+      </ul>
+    </article>
+  }
+
+  <article
+    class="lane"
+    (dragover)="allowDrop($event)"
+    (drop)="onDrop($event, null, backlog().length)"
+  >
+    <header>
+      <div>
+        <h2>Backlog</h2>
+        <p>{{ backlog().length }} issues · {{ points().backlog }} points</p>
+      </div>
+    </header>
+    <ul>
+      @for (issue of backlog(); track issue.id; let i = $index) {
+        <li
+          draggable="true"
+          [class.dragging]="draggedId() === issue.id"
+          (dragstart)="onDragStart($event, issue)"
+          (dragend)="onDragEnd()"
+          (dragover)="allowDrop($event)"
+          (drop)="onDrop($event, null, i); $event.stopPropagation()"
+          (click)="openIssue(issue)"
+        >
+          <app-issue-type-icon [type]="issue.type" />
+          <span class="key">{{ issue.key }}</span>
+          <span class="title">{{ issue.title }}</span>
+          <span class="status" [style.color]="statusMeta[issue.status].color">
+            {{ statusMeta[issue.status].label }}
+          </span>
+          <span class="points">{{ issue.storyPoints ?? '—' }}</span>
+          <span
+            class="avatar"
+            [style.background]="board.getUser(issue.assigneeId)?.color || '#dfe1e6'"
+          >
+            {{ board.getUser(issue.assigneeId)?.initials || '?' }}
+          </span>
+        </li>
+      } @empty {
+        <li class="empty">The backlog is empty. Create an issue to get started.</li>
+      }
+    </ul>
+  </article>
+</section>

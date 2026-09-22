@@ -1,0 +1,36 @@
+<article
+  class="jira-card"
+  draggable="true"
+  (click)="onOpen()"
+  (dragstart)="onDragStart($event)"
+  (dragend)="onDragEnd($event)"
+>
+  <p class="title">{{ issue().title }}</p>
+  <div class="meta">
+    <span class="key">
+      <app-issue-type-icon [type]="issue().type" />
+      {{ issue().key }}
+    </span>
+    <span class="right">
+      @if (issue().storyPoints !== null) {
+        <span class="points">{{ issue().storyPoints }}</span>
+      }
+      <span class="priority" [style.color]="priority().color" [title]="priority().label">
+        @switch (issue().priority) {
+          @case ('highest') { ⬆⬆ }
+          @case ('high') { ⬆ }
+          @case ('medium') { ⬌ }
+          @case ('low') { ⬇ }
+          @case ('lowest') { ⬇⬇ }
+        }
+      </span>
+      @if (assignee(); as person) {
+        <span class="avatar" [style.background]="person.color" [title]="person.name">
+          {{ person.initials }}
+        </span>
+      } @else {
+        <span class="avatar empty" title="Unassigned">?</span>
+      }
+    </span>
+  </div>
+</article>

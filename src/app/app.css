@@ -3,15 +3,21 @@
   flex-direction: column;
   min-height: 100dvh;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  color: #0f172a;
-  background: #fff;
+  color: #e8eefc;
+  background: transparent;
 }
 
 .main {
+  position: relative;
+  z-index: 1;
   flex: 1;
   width: 100%;
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: 1.75rem 1.25rem 2.5rem;
-  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.main.workspace {
+  padding: 0;
+  max-width: none;
+  min-height: 0;
 }

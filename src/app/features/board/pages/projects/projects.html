@@ -1,0 +1,62 @@
+<section class="projects">
+  <header>
+    <div>
+      <h1>Projects</h1>
+      <p>Open a software project to use the board, backlog, and reports.</p>
+    </div>
+    <button type="button" (click)="openCreate()">Create project</button>
+  </header>
+
+  <div class="grid">
+    @for (project of board.projects(); track project.key) {
+      <a class="card" [routerLink]="['/projects', project.key, 'board']">
+        <span class="swatch" [style.background]="project.color">{{ project.key }}</span>
+        <div>
+          <h2>{{ project.name }}</h2>
+          <p>{{ project.description }}</p>
+          <div class="meta">
+            <span>{{ project.key }}</span>
+            <span>{{ issueCount(project.key) }} issues</span>
+            <span>Lead {{ board.getUser(project.leadId)?.name }}</span>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+</section>
+
+@if (creating()) {
+  <div class="overlay" (click)="closeCreate()">
+    <section class="dialog" (click)="$event.stopPropagation()">
+      <h2>Create project</h2>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <label>
+          Name
+          <input
+            formControlName="name"
+            placeholder="e.g. Mobile App"
+            (input)="onName($any($event.target).value)"
+          />
+        </label>
+        <label>
+          Key
+          <input formControlName="key" placeholder="MOB" />
+          @if (form.controls.key.touched && form.controls.key.invalid) {
+            <span class="error">Use 2–10 letters or numbers, starting with a letter.</span>
+          }
+          @if (keyTaken()) {
+            <span class="error">That key is already in use.</span>
+          }
+        </label>
+        <label>
+          Description
+          <textarea formControlName="description" rows="3"></textarea>
+        </label>
+        <div class="actions">
+          <button type="button" class="secondary" (click)="closeCreate()">Cancel</button>
+          <button type="submit">Create</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

@@ -1,6 +1,7 @@
 {
   "routes": {
     "/": {},
+    "/projects": {},
     "/tasks": {},
     "/tasks/new": {}
   }

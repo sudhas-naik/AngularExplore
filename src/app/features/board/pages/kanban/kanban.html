@@ -1,0 +1,124 @@
+<section class="kanban">
+  <header class="toolbar">
+    <div>
+      <p class="crumb">{{ project()?.key }} / Board</p>
+      <h1>{{ sprint()?.name || 'No active sprint' }}</h1>
+      @if (sprint()?.goal) {
+        <p class="goal">{{ sprint()?.goal }}</p>
+      }
+    </div>
+    <button type="button" class="create" (click)="board.openCreate()">Create issue</button>
+  </header>
+
+  @if (!sprint()) {
+    <div class="empty-sprint">
+      <h2>There is no active sprint</h2>
+      <p>Plan work in the backlog, then start a sprint to see it on this board.</p>
+      <a [routerLink]="['/projects', projectKey(), 'backlog']">Go to backlog</a>
+    </div>
+  } @else {
+    <div class="filters">
+      <input
+        type="search"
+        placeholder="Search issues"
+        [ngModel]="board.filters().query"
+        (ngModelChange)="board.setFilters({ query: $event })"
+      />
+      <select
+        [ngModel]="board.filters().assigneeId"
+        (ngModelChange)="board.setFilters({ assigneeId: $event })"
+      >
+        <option value="">All assignees</option>
+        <option value="unassigned">Unassigned</option>
+        @for (user of board.users; track user.id) {
+          <option [value]="user.id">{{ user.name }}</option>
+        }
+      </select>
+      <select
+        [ngModel]="board.filters().type"
+        (ngModelChange)="board.setFilters({ type: $event })"
+      >
+        <option value="">All types</option>
+        @for (type of types; track type) {
+          <option [value]="type">{{ typeMeta[type].label }}</option>
+        }
+      </select>
+      <select
+        [ngModel]="board.filters().priority"
+        (ngModelChange)="board.setFilters({ priority: $event })"
+      >
+        <option value="">All priorities</option>
+        @for (priority of priorities; track priority) {
+          <option [value]="priority">{{ priorityMeta[priority].label }}</option>
+        }
+      </select>
+      <label class="mine">
+        <input
+          type="checkbox"
+          [ngModel]="board.filters().onlyMine"
+          (ngModelChange)="board.setFilters({ onlyMine: $event })"
+        />
+        Only my issues
+      </label>
+      <span class="count">{{ filteredCount() }} of {{ sprintCount() }}</span>
+    </div>
+
+    <div class="board">
+      @for (column of columns; track column.id; let i = $index) {
+        <section
+          class="column"
+          [style.animation-delay]="i * 80 + 'ms'"
+          [class.over]="dragOver()?.status === column.id"
+          [class.wip]="wipExceeded(column.id, column.wipLimit)"
+          (dragover)="onDragOver($event, column.id, issuesFor(column.id).length)"
+          (drop)="onDrop($event, column.id, issuesFor(column.id).length)"
+        >
+          <header>
+            <h2>{{ column.title }}</h2>
+            <span>
+              {{ issuesFor(column.id).length }}
+              @if (column.wipLimit) {
+                / {{ column.wipLimit }}
+              }
+            </span>
+          </header>
+          @if (wipExceeded(column.id, column.wipLimit)) {
+            <p class="wip-note">WIP limit exceeded</p>
+          }
+          <div class="cards">
+            @for (issue of issuesFor(column.id); track issue.id; let i = $index) {
+              <div
+                [class.dragging]="draggedId() === issue.id"
+                (dragover)="onDragOver($event, column.id, i); $event.stopPropagation()"
+                (drop)="onDrop($event, column.id, i); $event.stopPropagation()"
+              >
+                <app-issue-card
+                  [issue]="issue"
+                  (open)="openIssue($event)"
+                  (dragStart)="onDragStart($event, issue)"
+                  (dragEnd)="onDragEnd()"
+                />
+              </div>
+            }
+            @if (quickCreate() === column.id) {
+              <form class="quick" (submit)="$event.preventDefault(); submitQuick(column.id)">
+                <input
+                  [ngModel]="quickTitle()"
+                  (ngModelChange)="quickTitle.set($event)"
+                  name="quickTitle"
+                  placeholder="What needs to be done?"
+                />
+                <div>
+                  <button type="submit">Add</button>
+                  <button type="button" class="link" (click)="quickCreate.set(null)">Cancel</button>
+                </div>
+              </form>
+            } @else {
+              <button type="button" class="add" (click)="startQuick(column.id)">+ Create</button>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  }
+</section>

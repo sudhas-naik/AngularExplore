@@ -1,10 +1,14 @@
 <header class="header">
-  <a routerLink="/" class="brand">TaskFlow</a>
+  <a routerLink="/projects/ANG/board" class="brand">Angular Explore</a>
   <nav class="nav">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-      Home
+    <a
+      [routerLink]="['/projects', projectKey() || 'ANG', 'board']"
+      routerLinkActive="active"
+    >
+      Board
     </a>
-    <a routerLink="/tasks" routerLinkActive="active">Tasks</a>
-    <a routerLink="/tasks/new" routerLinkActive="active">Add Task</a>
+    <a routerLink="/projects" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Projects
+    </a>
   </nav>
 </header>

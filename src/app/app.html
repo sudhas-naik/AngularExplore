@@ -1,7 +1,10 @@
+<app-space-scene />
 <app-header />
 
-<main class="main">
+<main class="main" [class.workspace]="isWorkspace()">
   <router-outlet />
 </main>
 
-<app-footer />
+@if (!isWorkspace()) {
+  <app-footer />
+}

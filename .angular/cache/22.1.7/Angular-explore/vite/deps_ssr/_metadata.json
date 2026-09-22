@@ -1,91 +1,113 @@
 {
-  "hash": "0ecd7168",
-  "configHash": "05902ac0",
-  "lockfileHash": "8ac89d0d",
-  "browserHash": "b72de4a3",
+  "hash": "a2a27700",
+  "configHash": "dbd1b68e",
+  "lockfileHash": "5249f75a",
+  "browserHash": "1d94fb76",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "dc0a4e66",
+      "fileHash": "836d97a7",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "4b6dc961",
+      "fileHash": "3b2fb656",
+      "needsInterop": false
+    },
+    "@angular/core/rxjs-interop": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/rxjs-interop.mjs",
+      "file": "@angular_core_rxjs-interop.js",
+      "fileHash": "dfc2c3fa",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "f9dd78d8",
+      "fileHash": "e8cfad84",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "f073cb24",
+      "fileHash": "623e7f64",
       "needsInterop": false
     },
     "@angular/platform-server/init": {
       "src": "../../../../../../node_modules/@angular/platform-server/fesm2022/init.mjs",
       "file": "@angular_platform-server_init.js",
-      "fileHash": "20e98536",
+      "fileHash": "aff0e2ba",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "1c76eb43",
+      "fileHash": "bebd6f88",
       "needsInterop": false
     },
     "@angular/ssr": {
       "src": "../../../../../../node_modules/@angular/ssr/fesm2022/ssr.mjs",
       "file": "@angular_ssr.js",
-      "fileHash": "71774381",
+      "fileHash": "26877304",
       "needsInterop": false
     },
     "@angular/ssr/node": {
       "src": "../../../../../../node_modules/@angular/ssr/fesm2022/node.mjs",
       "file": "@angular_ssr_node.js",
-      "fileHash": "d44048cb",
+      "fileHash": "c8c7e137",
       "needsInterop": false
     },
     "express": {
       "src": "../../../../../../node_modules/express/index.js",
       "file": "express.js",
-      "fileHash": "474b482b",
+      "fileHash": "10ee977c",
       "needsInterop": true
+    },
+    "rxjs": {
+      "src": "../../../../../../node_modules/rxjs/dist/cjs/index.js",
+      "file": "rxjs.js",
+      "fileHash": "39e4761e",
+      "needsInterop": true
+    },
+    "three": {
+      "src": "../../../../../../node_modules/three/build/three.module.js",
+      "file": "three.js",
+      "fileHash": "2f4e7358",
+      "needsInterop": false
     }
   },
   "chunks": {
+    "_resource-chunk-BUHPB2XF": {
+      "file": "_resource-chunk-BUHPB2XF.js",
+      "isDynamicEntry": false
+    },
     "bundled-domino-ODCAp5wC": {
       "file": "bundled-domino-ODCAp5wC.js",
       "isDynamicEntry": false
     },
-    "common-57GkSE1a": {
-      "file": "common-57GkSE1a.js",
+    "common-fDQPa6j6": {
+      "file": "common-fDQPa6j6.js",
       "isDynamicEntry": false
     },
-    "core-B5SD4A0z": {
-      "file": "core-B5SD4A0z.js",
+    "core-xoO8aAGr": {
+      "file": "core-xoO8aAGr.js",
       "isDynamicEntry": false
     },
-    "platform-browser-ETmhkNWN": {
-      "file": "platform-browser-ETmhkNWN.js",
+    "platform-browser-DeP6PJka": {
+      "file": "platform-browser-DeP6PJka.js",
       "isDynamicEntry": false
     },
     "rolldown-runtime-C7HZzL1F": {
       "file": "rolldown-runtime-C7HZzL1F.js",
       "isDynamicEntry": false
     },
-    "router-_rB6diyq": {
-      "file": "router-_rB6diyq.js",
+    "router-D2fZuVDK": {
+      "file": "router-D2fZuVDK.js",
       "isDynamicEntry": false
     },
-    "ssr-DLQ8iQGK": {
-      "file": "ssr-DLQ8iQGK.js",
+    "ssr-C25KybdU": {
+      "file": "ssr-C25KybdU.js",
       "isDynamicEntry": false
     },
     "xhr2-BpIBBfsG": {
